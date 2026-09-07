@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "name": "SaaS backend",
+  "seed": 1024,
+  "entry": "gateway",
+  "rps": 70,
+  "duration": 45,
+  "services": [
+    {
+      "id": "gateway",
+      "name": "API Gateway",
+      "kind": "gateway",
+      "latency": 10,
+      "capacity": 100,
+      "dependencies": [
+        "workspace",
+        "identity"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "workspace",
+      "name": "Workspace API",
+      "kind": "service",
+      "latency": 25,
+      "capacity": 60,
+      "dependencies": [
+        "database",
+        "identity"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "identity",
+      "name": "Identity Service",
+      "kind": "service",
+      "latency": 20,
+      "capacity": 45,
+      "dependencies": [
+        "cache"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "database",
+      "name": "Primary Database",
+      "kind": "database",
+      "latency": 30,
+      "capacity": 50,
+      "dependencies": [],
+      "errorRate": 0
+    },
+    {
+      "id": "cache",
+      "name": "Session Cache",
+      "kind": "cache",
+      "latency": 5,
+      "capacity": 80,
+      "dependencies": [],
+      "errorRate": 0
+    }
+  ],
+  "policy": {
+    "timeout": 600,
+    "retries": 2,
+    "backoff": 100,
+    "jitter": false,
+    "circuitBreaker": false
+  },
+  "fault": {
+    "enabled": true,
+    "target": "identity",
+    "type": "outage",
+    "value": 100,
+    "start": 10,
+    "duration": 20
+  }
+}

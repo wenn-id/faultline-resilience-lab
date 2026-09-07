@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "name": "AI inference pipeline",
+  "seed": 2048,
+  "entry": "gateway",
+  "rps": 30,
+  "duration": 45,
+  "services": [
+    {
+      "id": "gateway",
+      "name": "API Gateway",
+      "kind": "gateway",
+      "latency": 15,
+      "capacity": 100,
+      "dependencies": [
+        "orchestrator"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "orchestrator",
+      "name": "AI Orchestrator",
+      "kind": "service",
+      "latency": 30,
+      "capacity": 60,
+      "dependencies": [
+        "llm",
+        "retrieval",
+        "moderation"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "llm",
+      "name": "Model Provider",
+      "kind": "external",
+      "latency": 450,
+      "capacity": 40,
+      "dependencies": [],
+      "errorRate": 0
+    },
+    {
+      "id": "retrieval",
+      "name": "Vector Search",
+      "kind": "database",
+      "latency": 45,
+      "capacity": 60,
+      "dependencies": [],
+      "errorRate": 0
+    },
+    {
+      "id": "moderation",
+      "name": "Moderation",
+      "kind": "service",
+      "latency": 70,
+      "capacity": 80,
+      "dependencies": [],
+      "errorRate": 0
+    }
+  ],
+  "policy": {
+    "timeout": 1800,
+    "retries": 1,
+    "backoff": 200,
+    "jitter": true,
+    "circuitBreaker": false
+  },
+  "fault": {
+    "enabled": true,
+    "target": "llm",
+    "type": "errors",
+    "value": 65,
+    "start": 10,
+    "duration": 20
+  }
+}

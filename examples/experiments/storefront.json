@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "name": "Storefront API",
+  "seed": 2048,
+  "entry": "gateway",
+  "rps": 80,
+  "duration": 45,
+  "services": [
+    {
+      "id": "gateway",
+      "name": "API Gateway",
+      "kind": "gateway",
+      "latency": 12,
+      "capacity": 100,
+      "dependencies": [
+        "auth",
+        "checkout"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "auth",
+      "name": "Auth Service",
+      "kind": "service",
+      "latency": 18,
+      "capacity": 80,
+      "dependencies": [
+        "redis"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "checkout",
+      "name": "Checkout",
+      "kind": "service",
+      "latency": 35,
+      "capacity": 50,
+      "dependencies": [
+        "payments",
+        "postgres"
+      ],
+      "errorRate": 0
+    },
+    {
+      "id": "redis",
+      "name": "Redis Cache",
+      "kind": "cache",
+      "latency": 4,
+      "capacity": 100,
+      "dependencies": [],
+      "errorRate": 0
+    },
+    {
+      "id": "payments",
+      "name": "Payments API",
+      "kind": "external",
+      "latency": 90,
+      "capacity": 40,
+      "dependencies": [],
+      "errorRate": 0
+    },
+    {
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "kind": "database",
+      "latency": 22,
+      "capacity": 35,
+      "dependencies": [],
+      "errorRate": 0
+    }
+  ],
+  "policy": {
+    "timeout": 700,
+    "retries": 1,
+    "backoff": 100,
+    "jitter": true,
+    "circuitBreaker": false
+  },
+  "fault": {
+    "enabled": true,
+    "target": "postgres",
+    "type": "latency",
+    "value": 900,
+    "start": 12,
+    "duration": 20
+  }
+}
